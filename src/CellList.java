@@ -1,13 +1,13 @@
-import javafx.scene.control.Cell;
 
 import java.util.NoSuchElementException;
+import java.util.Random;
 
 public class CellList {
 
     class CellNode {
 
-        private CellPhone cellPhone;
-        private CellNode next;
+        private CellPhone cellPhone; //cell phone object pointer inside the node
+        private CellNode next; //pointer to the next node
 
         /**
          * Default Constructor
@@ -22,7 +22,7 @@ public class CellList {
         /**
          * Parameterized Constructor
          *
-         * @param cellPhone cell phone object
+         * @param cellPhone cell phone object pointer
          * @param node      node object
          */
         public CellNode(CellPhone cellPhone, CellNode node) {
@@ -35,7 +35,7 @@ public class CellList {
         /**
          * Copy Constructor
          *
-         * @param cellNode node object
+         * @param cellNode node object pointer
          */
         public CellNode(CellNode cellNode) {
 
@@ -44,6 +44,11 @@ public class CellList {
 
         }
 
+        /**
+         * copy constructor for the node class
+         *
+         * @return a copy of the node
+         */
         public CellNode clone() {
 
             return new CellNode(this.cellPhone, this.next);
@@ -51,25 +56,43 @@ public class CellList {
 
         }
 
+        /**
+         * Accessor method for the cell phone inside the node
+         *
+         * @return a cell phone
+         */
         public CellPhone getCellPhone() {
             return cellPhone;
         }
 
+        /**
+         * Mutator method for the cell phone inside the node
+         * @param cellPhone cell phone object pointer
+         */
         public void setCellPhone(CellPhone cellPhone) {
             this.cellPhone = cellPhone;
         }
 
+        /**
+         * Accessor method for the next node pointer
+         * @return node pointer [PRIVACY LEAK, METHOD SHOULD BE PRIVATE]
+         */
         public CellNode getNode() {
             return next;
         }
 
+        /**
+         * Mutator method for the next node pointer
+         * @param node node pointer [PRIVACY LEAK]
+         */
         public void setNode(CellNode node) {
             this.next = node;
         }
     }
 
-    private CellNode head;
-    private int size;
+    private CellNode head; //point to the 1st node in the list
+    private int size; //size of the list (keeps track of the number of nodes)
+    private Random r = new Random();
 
     /**
      * Default Constructor
@@ -83,7 +106,7 @@ public class CellList {
     }
 
     /**
-     * Copy Constructor
+     * Copy Constructor (deep copy)
      *
      * @param cellList cellList object
      */
@@ -103,6 +126,7 @@ public class CellList {
                 if (head == null) {
 
                     t2 = new CellNode(t1.cellPhone, null);
+                    t2.getCellPhone().setSerialNum(r.nextInt(8999999)+1000000);
 
 
                     head = t2;
@@ -110,6 +134,7 @@ public class CellList {
                 } else {
 
                     t3 = new CellNode(t1.cellPhone, null);
+                    t3.getCellPhone().setSerialNum(r.nextInt(8999999)+1000000);
                     t2.next = t3;
                     t2 = t3;
 
@@ -126,13 +151,20 @@ public class CellList {
 
     }
 
+    /**
+     * clone method that will copy a list
+     * @return
+     */
     public CellList clone() {
 
         return new CellList(this);
 
     }
 
-
+    /**
+     * This method will take a given cellPhone object and will create a new node with the object which will be linked and placed at the beginning of the list
+     * @param cellPhone cellPhone object
+     */
     public void addToStart(CellPhone cellPhone) {
 
         head = new CellNode(cellPhone, head);
@@ -140,6 +172,12 @@ public class CellList {
 
     }
 
+    /**
+     * Inserts a node at the specified index. (Note: it is impossible to add an object at the end of the list as the limit is size - 1)
+     *
+     * @param cellPhone cell phone object pointer
+     * @param index index given by the user
+     */
     public void insertAtIndex(CellPhone cellPhone, int index) {
 
 
@@ -154,7 +192,7 @@ public class CellList {
 
         }
 
-        if (index == 0) {
+        if (index == 0) { //special case if the index is at the beginning
 
             head = new CellNode(cellPhone, head);
 
@@ -179,7 +217,7 @@ public class CellList {
     }
 
     /**
-     * WIP
+     * Moves the pointer from the node before the index to the node after the index
      *
      * @param index the index from which a node will be deleted
      */
@@ -194,6 +232,11 @@ public class CellList {
             System.out.println("Invalid index. Shutting down...");
             System.exit(-1);
 
+        }
+
+        if (index == 0) { //special case when the index is on the 1st node
+            deleteFromStart();
+            return;
         }
 
         CellNode t = head;
@@ -211,7 +254,8 @@ public class CellList {
     }
 
     /**
-     * WIP
+     * Deletes the 1st node in the list (the one being pointed by the head pointer)
+     * This is done by moving the head pointer to the next node which leaves the previous node to the garbage collector
      */
     public void deleteFromStart() {
 
@@ -227,7 +271,9 @@ public class CellList {
     }
 
     /**
-     * @param cellPhone cell phone object
+     * replaces the cell phone inside the specified node with another cell phone
+     *
+     * @param cellPhone cell phone object pointer
      * @param index     index at which the node will be replace
      */
     public void replaceAtIndex(CellPhone cellPhone, int index) {
@@ -255,6 +301,13 @@ public class CellList {
 
     }
 
+    /**
+     * This method will check through the specified cell list to see if it has a cell phone with the given serial number
+     *
+     * @param serialNum serial number given as a parameter
+     * @return a cell phone node pointer [PRIVACY LEAK ISSUES, RETURNING A POINTER CAN BE VERY DANGEROUS AS IT CAN ALLOW THE USER TO DESTROY THE WHOLE LIST]
+     * [It is better if the method is defined as private to prevent its usage outside the class]
+     */
     public CellNode find(long serialNum) {
 
         CellNode t = head;
@@ -271,6 +324,12 @@ public class CellList {
 
     }
 
+    /**
+     * Checks if the specified cell list contains a cell phone with the given serial number
+     *
+     * @param serialNum serial number given as a parameter
+     * @return true if it contains a cell phone with the given serial number or false if it doesn't
+     */
     public boolean contains(long serialNum) {
 
         if (find(serialNum) != null) return true;
@@ -279,6 +338,9 @@ public class CellList {
 
     }
 
+    /**
+     * Displays the cellList with all its cellPhone object in a Linked List conceptual format
+     */
     public void showContents() {
 
         CellNode t = head;
@@ -306,8 +368,9 @@ public class CellList {
     }
 
     /**
-     * @param cellList second cellList used to compare
-     * @return
+     * equals method used to compare 2 cell lists
+     * @param cellList second cellList used for comparison
+     * @return true if the cell lists have the same contents (apart from the serial numbers)
      */
     public boolean equals(CellList cellList) {
 
