@@ -153,7 +153,7 @@ public class CellList {
 
     /**
      * clone method that will copy a list
-     * @return
+     * @return the copied list (deep copy)
      */
     public CellList clone() {
 
@@ -373,9 +373,10 @@ public class CellList {
      * @return true if the cell lists have the same contents (apart from the serial numbers)
      */
     public boolean equals(CellList cellList) {
-
+        if (cellList == null || cellList.getClass() != getClass()) return false;
         CellNode t1 = head;
         CellNode t2 = cellList.head;
+
 
         while (t1 != null && t2 != null) {
 

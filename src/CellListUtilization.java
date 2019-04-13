@@ -9,6 +9,7 @@ public class CellListUtilization {
     public static void main(String[] args) {
 
         CellList cl1 = new CellList(), cl2, cl3 = new CellList(); //3 cell lists used for testing (2 will be a deep copy of 1 and 3 will test functions on an empty list)
+        CellList testcl2 = null;
         Scanner sc = null;
         Scanner userInput = new Scanner(System.in);
 
@@ -47,7 +48,7 @@ public class CellListUtilization {
         cl2 = cl1.clone();
         cl2.showContents();
 
-        System.out.println("***See if CL1 is equal to CL2: " + cl1.equals(cl2) + "***\n");
+        System.out.println("***See if CL1 is equal to CL2: " + cl1.equals(testcl2) + "***\n");
 
         System.out.println("***CL1 - After Insertion at Index ***");
         cl1.insertAtIndex(new CellPhone(123456, "TestCoInsert", 2019, 100), 21);

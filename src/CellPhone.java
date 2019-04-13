@@ -72,7 +72,7 @@ public class CellPhone {
 
         //1000000 to 9999999
 
-        return new CellPhone(this, r.nextInt(8999999) + 1000000);
+        return new CellPhone(this, r.nextInt(8999999) + 1000000);  //random 7 digit serial number
 
     }
 
